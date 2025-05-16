@@ -8,23 +8,19 @@ from abc import ABC, abstractmethod
 from bs4 import BeautifulSoup
 from typing import List, Dict
 
-
 class BaseModel(ABC):
-    """Базовый абстрактный класс для работы с веб-сайтами"""
 
     @abstractmethod
     def fetch_data(self, categories: List[str]) -> None:
-        """Метод для получения данных с веб-сайта по указанным категориям"""
+
         pass
 
     @abstractmethod
     def to_dict(self) -> Dict:
-        """Метод для преобразования данных в словарь"""
+
         pass
 
-
 class WoysaClubParser(BaseModel):
-    """Класс для парсинга данных с сайта woysa.club (реализован как синглтон)"""
 
     _instance = None
 
@@ -42,7 +38,6 @@ class WoysaClubParser(BaseModel):
         self.base_url = "https://woysa.club"
 
     def fetch_data(self, categories: List[str]) -> None:
-        """Получение данных с сайта woysa.club по указанным категориям"""
 
         for category in categories:
             try:
@@ -52,24 +47,13 @@ class WoysaClubParser(BaseModel):
 
                 soup = BeautifulSoup(response.text, 'html.parser')
 
-                # Здесь можно добавить конкретную логику парсинга
-                # Например, извлечение заголовков статей
-                articles = []
-                for article in soup.find_all('article'):
-                    title = article.find('h2').text.strip() if article.find('h2') else 'No title'
-                    link = article.find('a')['href'] if article.find('a') else '#'
-                    articles.append({'title': title, 'link': link})
-
-                self.data[category] = articles
-
             except requests.exceptions.RequestException as e:
                 print(f"Ошибка при получении данных для категории {category}: {e}")
                 self.data[category] = []
 
     def to_dict(self) -> Dict:
-        """Преобразование полученных данных в словарь"""
-        return self.data
 
+        return self.data
 
 # Пример использования
 if __name__ == "__main__":
@@ -77,7 +61,7 @@ if __name__ == "__main__":
     parser1 = WoysaClubParser()
     parser1.fetch_data(['#rec580600206', '#rec582709478'])
 
-    # Создаем второй экземпляр (должен быть тем же самым объектом)
+    # Создаем второй экземпляр
     parser2 = WoysaClubParser()
     parser2.fetch_data(['#rec581311284'])
 
